@@ -1,18 +1,27 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.util.Alerts;
+import gui.util.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Department;
 import model.services.DepartmentService;
@@ -39,8 +48,9 @@ public class DepartmentListController implements Initializable {
 	}
 	
 	@FXML
-	public void onBtnNewAction() {
-		System.out.println("click");
+	public void onBtnNewAction(ActionEvent event) { // FUNÇÃO QUE RECEBE O EVENTO DO CLICK 
+		Stage parentStage = Utils.currentStage(event);
+		createDiealogForm("/gui/DepartmentForm.fxml", parentStage); //CHAMA A FUNÇÃO QUE ABRE O MODAL
 	}
 	
 	@Override
@@ -64,6 +74,24 @@ public class DepartmentListController implements Initializable {
 			List<Department> list = service.findAll(); // PEGA OS DEPARTAMENTOS CADASTRADOS
 			obsList = FXCollections.observableArrayList(list); // JOGA DENTRO DO obsList
 			tableViewDepartment.setItems(obsList); // CARREGA OS DEPARTAMENTOS NA TABELA
+		}
+	}
+	
+	private void createDiealogForm(String absoluteName, Stage parentStage) { // CRIANDO O MODA. FUNÇÃO PARA CARREGAR A JANELA MODAL
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			Pane pane = loader.load();
+			
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Dados do departamento"); // TITULO DO MODAL
+			dialogStage.setScene(new Scene(pane)); // INSTANCIAR A CENA
+			dialogStage.setResizable(false); // REDIMENSIONAR A JANELA
+			dialogStage.initOwner(parentStage); // PASSANDO QUEM É O PAI DO MODAL
+			dialogStage.initModality(Modality.WINDOW_MODAL); // INDICA QUE A JANELA É UM MODAL
+			dialogStage.showAndWait();
+		}
+		catch (IOException e) {
+			Alerts.showAlert("IO Exceotio", "Erro carregando view", e.getMessage(), AlertType.ERROR);
 		}
 	}
 }
