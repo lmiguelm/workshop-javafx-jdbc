@@ -15,7 +15,6 @@ public class SellerService {
 	}
 	
 	public void saveOrUpdate(Seller obj) {
-		//SE O ID FOR NULL INSERE UM DEPARTAMENT
 		if (obj.getId() == null) {
 			dao.insert(obj);
 		}
