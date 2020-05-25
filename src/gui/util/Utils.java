@@ -1,4 +1,4 @@
-package gui.util;
+ package gui.util;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -91,5 +91,13 @@ public class Utils {
 				}
 			}
 		});
+	}
+
+	public static Double tryParseToDouble(String str) {
+		try {
+			return Double.parseDouble(str);
+		} catch (NumberFormatException e) {
+			return null;
+		}
 	}
 }
