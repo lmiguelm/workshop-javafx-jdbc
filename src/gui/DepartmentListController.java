@@ -86,6 +86,7 @@ public class DepartmentListController implements Initializable {
 			DepartmentFormController controller = loader.getController(); //PEGA O CONTROLLARDOR DO FORMULARIO
 			controller.setDepartment(obj);
 			controller.updateFormData();
+			controller.setDepartmentService(new DepartmentService());
 			
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Dados do departamento"); // TITULO DO MODAL

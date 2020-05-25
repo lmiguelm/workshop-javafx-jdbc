@@ -1,19 +1,27 @@
 package gui;
 
 import java.net.URL;
+import java.nio.channels.IllegalSelectorException;
 import java.util.ResourceBundle;
 
+import db.DbException;
+import gui.util.Alerts;
 import gui.util.Constraints;
+import gui.util.Utils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import model.entities.Department;
+import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
 	
 	private Department entity;
+	private DepartmentService service;
 	
 	@FXML
 	private Button btnSave;
@@ -26,20 +34,48 @@ public class DepartmentFormController implements Initializable {
 	@FXML
 	private Label labelError;
 	
-	// CRIANDO A DEPENDENCIA DE DEPARTAMENTO
+	// INJETANDO A DEPENDENCIAS
 	public void setDepartment(Department entity) {
 		this.entity = entity;
 	}
-	
-	
-	@FXML
-	public void onBtncSaveAction() {
-		System.out.println("save");
+	public void setDepartmentService(DepartmentService service) {
+		this.service = service;
 	}
 	
+	
 	@FXML
-	public void onBtncCancelAction() {
+	public void onBtncSaveAction(ActionEvent event) {
+		if (entity == null) {
+			throw new IllegalStateException("Entidade nula");
+		}
+		if (service == null) {
+			throw new IllegalStateException("Service nula");
+		}
+		
+		try {			
+			entity = getFormData(); //RESPONSAVEL POR PEGAR OS DADOS DO FORUMLARIO E CRIAR UM OBJETO DEPARTAMENTO
+			service.saveOrUpdate(entity);
+			Utils.currentStage(event).close(); // FECHA A JANELA DO MODAL
+		}
+		catch (DbException e) {
+			Alerts.showAlert("Erro salvando", null, e.getMessage(), AlertType.ERROR);
+		}
+	
+	}
+	
+	private Department getFormData() {
+		
+		Department obj = new Department();
+		
+		obj.setId(Utils.tryParseToInt(txtId.getText()));
+		obj.setName(txtName.getText());
+		
+		return obj;
+	}
+	@FXML
+	public void onBtncCancelAction(ActionEvent event) {
 		System.out.println("cancel");
+		Utils.currentStage(event).close(); // FECHA A JANELA DO MODAL
 	}
 
 	@Override
