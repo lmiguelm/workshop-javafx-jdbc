@@ -50,7 +50,8 @@ public class DepartmentListController implements Initializable {
 	@FXML
 	public void onBtnNewAction(ActionEvent event) { // FUN플O QUE RECEBE O EVENTO DO CLICK 
 		Stage parentStage = Utils.currentStage(event);
-		createDiealogForm("/gui/DepartmentForm.fxml", parentStage); //CHAMA A FUN플O QUE ABRE O MODAL
+		Department obj = new Department();
+		createDiealogForm(obj, "/gui/DepartmentForm.fxml", parentStage); //CHAMA A FUN플O QUE ABRE O MODAL
 	}
 	
 	@Override
@@ -77,10 +78,14 @@ public class DepartmentListController implements Initializable {
 		}
 	}
 	
-	private void createDiealogForm(String absoluteName, Stage parentStage) { // CRIANDO O MODA. FUN플O PARA CARREGAR A JANELA MODAL
+	private void createDiealogForm(Department obj, String absoluteName, Stage parentStage) { // CRIANDO O MODA. FUN플O PARA CARREGAR A JANELA MODAL
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load();
+			
+			DepartmentFormController controller = loader.getController(); //PEGA O CONTROLLARDOR DO FORMULARIO
+			controller.setDepartment(obj);
+			controller.updateFormData();
 			
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Dados do departamento"); // TITULO DO MODAL
