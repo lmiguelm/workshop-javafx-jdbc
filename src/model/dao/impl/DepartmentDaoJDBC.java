@@ -10,6 +10,7 @@ import java.util.List;
 
 import db.DB;
 import db.DbException;
+import db.DbIntegrityException;
 import model.dao.DepartmentDao;
 import model.entities.Department;
 
@@ -49,9 +50,6 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
-		catch (Exception e) {
-			System.out.println("Falha genérica. "+e.getMessage());
-		}
 		finally {
 			DB.closeStatement(st);
 		}
@@ -78,9 +76,6 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 		catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
-		catch (Exception e) {
-			System.out.println("Falha genérica. "+e.getMessage());
-		}
 		finally {
 			DB.closeStatement(st);
 		}
@@ -103,10 +98,7 @@ public class DepartmentDaoJDBC implements DepartmentDao {
 			st.executeUpdate();
 		} 
 		catch (SQLException e) {
-			throw new DbException(e.getMessage());
-		}
-		catch (Exception e) {
-			System.out.println("Falha genérica. "+e.getMessage());
+			throw new DbIntegrityException(e.getMessage());
 		}
 		finally {
 			DB.closeStatement(st);
