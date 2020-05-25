@@ -1,6 +1,7 @@
 package gui;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -42,6 +43,12 @@ public class SellerListController implements Initializable, DataChangeListener {
 	@FXML
 	private TableColumn<Seller, String> tableColumnName;
 	@FXML
+	private TableColumn<Seller, String> tableColumnEmail;
+	@FXML
+	private TableColumn<Seller, Date> tableColumnBirthDate;
+	@FXML
+	private TableColumn<Seller, Double> tableColumnBaseSalary;
+	@FXML
 	private Button btnNew;
 
 	private ObservableList<Seller> obsList;
@@ -65,10 +72,14 @@ public class SellerListController implements Initializable, DataChangeListener {
 	private void initializeNodes() {
 		tableColumnId.setCellValueFactory(new PropertyValueFactory<>("id")); // INICIAR O COMPORTAMENTO DAS COLUNAS
 		tableColumnName.setCellValueFactory(new PropertyValueFactory<>("name")); // INICIAR O COMPORTAMENTO DAS COLUNAS
+		tableColumnEmail.setCellValueFactory(new PropertyValueFactory<>("email")); // INICIAR O COMPORTAMENTO DAS COLUNAS
+		tableColumnBirthDate.setCellValueFactory(new PropertyValueFactory<>("birthDate")); // INICIAR O COMPORTAMENTO DAS COLUNAS
+		Utils.formatTableColumnDate(tableColumnBirthDate, "dd/MM/yyyy"); // FORMATANDO O TIPO DATE
+		tableColumnBaseSalary.setCellValueFactory(new PropertyValueFactory<>("baseSalary")); // INICIAR O COMPORTAMENTO DAS COLUNAS
+		Utils.formatTableColumnDouble(tableColumnBaseSalary, 2); // FORMATANDO AS CASAS DECIMAIS
 
 		Stage stage = (Stage) Main.getMainScene().getWindow(); // PEGA A REFERENCIA DA JANELA
-		tableViewSeller.prefHeightProperty().bind(stage.heightProperty()); // FAZ A TABELA ACOMPANHAR A ALTURA DA
-																				// JANELA
+		tableViewSeller.prefHeightProperty().bind(stage.heightProperty()); // FAZ A TABELA ACOMPANHAR A ALTURA DA JANELLA
 	}
 
 	public void updateTableView() {
