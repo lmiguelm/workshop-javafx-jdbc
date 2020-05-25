@@ -1,10 +1,12 @@
 package gui;
 
 import java.net.URL;
-import java.nio.channels.IllegalSelectorException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DbException;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
@@ -20,8 +22,10 @@ import model.services.DepartmentService;
 
 public class DepartmentFormController implements Initializable {
 	
+	// DEPENDENCIAS
 	private Department entity;
 	private DepartmentService service;
+	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 	
 	@FXML
 	private Button btnSave;
@@ -41,6 +45,9 @@ public class DepartmentFormController implements Initializable {
 	public void setDepartmentService(DepartmentService service) {
 		this.service = service;
 	}
+	public void subscriteDataChangeListener(DataChangeListener listener) {
+		dataChangeListeners.add(listener);
+	}
 	
 	
 	@FXML
@@ -55,12 +62,19 @@ public class DepartmentFormController implements Initializable {
 		try {			
 			entity = getFormData(); //RESPONSAVEL POR PEGAR OS DADOS DO FORUMLARIO E CRIAR UM OBJETO DEPARTAMENTO
 			service.saveOrUpdate(entity);
+			notifyDataChangeListeners();
 			Utils.currentStage(event).close(); // FECHA A JANELA DO MODAL
 		}
 		catch (DbException e) {
 			Alerts.showAlert("Erro salvando", null, e.getMessage(), AlertType.ERROR);
 		}
 	
+	}
+	
+	private void notifyDataChangeListeners() {
+		for (DataChangeListener listener: dataChangeListeners) {
+			listener.onDataChange();
+		}
 	}
 	
 	private Department getFormData() {
